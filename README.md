@@ -1,4 +1,4 @@
-# Afterwork Winter Olympics (local webpage)
+# CPAC I&I Winter Olympics (local webpage)
 
 A tiny local webpage for showing teams and tracking points across 5 events.
 

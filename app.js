@@ -2,6 +2,8 @@
 
 const STORAGE_KEY = 'aw-winter-olympics-v1';
 const RESULTS_FORMAT_VERSION = 1;
+const APP_NAME = 'CPAC I&I Winter Olympics';
+const LEGACY_APP_NAME = 'Afterwork Winter Olympics';
 
 function uid(prefix = 'id') {
   return `${prefix}_${Math.random().toString(16).slice(2)}_${Date.now().toString(16)}`;
@@ -171,7 +173,7 @@ function buildResultsExportRows() {
   ];
 
   const rows = [];
-  rows.push({ RecordType: 'meta', Key: 'app', Value: 'Afterwork Winter Olympics' });
+  rows.push({ RecordType: 'meta', Key: 'app', Value: APP_NAME });
   rows.push({ RecordType: 'meta', Key: 'formatVersion', Value: String(RESULTS_FORMAT_VERSION) });
   rows.push({ RecordType: 'meta', Key: 'exportedAt', Value: new Date().toISOString() });
 
@@ -237,7 +239,7 @@ function exportResultsToXlsx() {
   const wb = XLSX.utils.book_new();
 
   const meta = [
-    { Key: 'app', Value: 'Afterwork Winter Olympics' },
+    { Key: 'app', Value: APP_NAME },
     { Key: 'formatVersion', Value: RESULTS_FORMAT_VERSION },
     { Key: 'exportedAt', Value: new Date().toISOString() },
   ];
@@ -335,7 +337,7 @@ function importResultsFromWorkbook(wb) {
 
   const meta = read('Meta');
   const metaMap = new Map(meta.map((r) => [String(r.Key || '').toLowerCase().trim(), String(r.Value || '').trim()]));
-  if (metaMap.get('app') !== 'Afterwork Winter Olympics') throw new Error('Not a results workbook');
+  if (metaMap.get('app') !== APP_NAME && metaMap.get('app') !== LEGACY_APP_NAME) throw new Error('Not a results workbook');
 
   const teamsRows = read('Teams');
   const teams = [];

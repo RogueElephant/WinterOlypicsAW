@@ -18,10 +18,9 @@
 body {
     margin: 0;
     font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    min-height: 100vh;
     position: relative;
-    background: radial-gradient(1000px 800px at 15% 10%, rgba(52, 71, 154, 0.35), transparent 50%),
-        radial-gradient(900px 700px at 85% 20%, rgba(42, 58, 120, 0.35), transparent 55%),
-        var(--bg);
+    background: var(--bg);
     color: var(--text);
 }
 
@@ -29,20 +28,21 @@ body::before,
 body::after {
     content: "";
     position: fixed;
-    inset: 0;
     pointer-events: none;
 }
 
 body::before {
+    inset: clamp(24px, 4vw, 56px);
     background-position: center;
     background-repeat: no-repeat;
-    background-size: cover;
-    opacity: 0.42;
+    background-size: contain;
+    opacity: 0.7;
     z-index: 0;
 }
 
 body::after {
-    background: linear-gradient(rgba(11, 16, 32, 0.45), rgba(11, 16, 32, 0.45));
+    inset: 0;
+    background: linear-gradient(rgba(11, 16, 32, 0.38), rgba(11, 16, 32, 0.38));
     z-index: 1;
 }
 
@@ -61,13 +61,40 @@ body[data-active-view="events"]::before {
 
 .header {
     display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
+    align-items: center;
+    justify-content: center;
     gap: 16px;
-    padding: 24px 20px;
+    padding: 24px 20px 28px;
     border-bottom: 1px solid var(--border);
     position: relative;
     z-index: 2;
+}
+
+.header-intro {
+    text-align: center;
+    max-width: 760px;
+    width: min(92%, 760px);
+    padding: 14px 18px;
+    border-radius: 16px;
+    border: 1px solid rgba(11, 16, 32, 0.18);
+    background:
+        linear-gradient(90deg,
+            rgba(42, 58, 120, 0.16) 0 20%,
+            rgba(155, 44, 44, 0.16) 20% 40%,
+            rgba(168, 176, 214, 0.2) 40% 60%,
+            rgba(42, 58, 120, 0.16) 60% 80%,
+            rgba(155, 44, 44, 0.16) 80% 100%),
+        rgba(238, 242, 255, 0.9);
+    box-shadow: 0 8px 26px rgba(11, 16, 32, 0.24);
+}
+
+.header-intro h1 {
+    color: var(--bg);
+}
+
+.header-intro .muted {
+    color: rgba(11, 16, 32, 0.8);
+    margin: 6px 0 0;
 }
 
 .header-actions {
@@ -76,6 +103,27 @@ body[data-active-view="events"]::before {
     justify-content: flex-end;
     gap: 10px;
     flex-wrap: wrap;
+    position: absolute;
+    right: 20px;
+    top: 24px;
+}
+
+@media (max-width: 900px) {
+    .header {
+        justify-content: stretch;
+        padding-top: 16px;
+    }
+
+    .header-intro {
+        width: 100%;
+    }
+
+    .header-actions {
+        position: static;
+        justify-content: center;
+        width: 100%;
+        margin-top: 8px;
+    }
 }
 
 h1 {
