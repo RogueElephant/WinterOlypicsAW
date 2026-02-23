@@ -465,11 +465,11 @@ function requireActionPassword(actionLabel) {
 
 function getActiveViewId() {
   const v = state.settings?.activeView;
-  return v === 'teams' || v === 'points' || v === 'events' ? v : 'teams';
+  return v === 'welcome' || v === 'teams' || v === 'points' || v === 'events' ? v : 'teams';
 }
 
 function setActiveView(viewId) {
-  const id = viewId === 'points' || viewId === 'events' ? viewId : 'teams';
+  const id = viewId === 'welcome' || viewId === 'points' || viewId === 'events' ? viewId : 'teams';
   state.settings.activeView = id;
   saveState();
   document.body.dataset.activeView = id;

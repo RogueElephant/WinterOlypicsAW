@@ -58,6 +58,10 @@ body[data-active-view="events"]::before {
     background-image: url("Events.png");
 }
 
+body[data-active-view="welcome"]::before {
+    background-image: none;
+}
+
 
 .header {
     display: flex;
@@ -303,6 +307,16 @@ input[type="file"] {
 
 .view.is-active {
     display: block;
+}
+
+.welcome-image {
+    display: block;
+    width: min(96%, 1100px);
+    max-height: 70vh;
+    margin: 18px auto 6px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    object-fit: contain;
 }
 
 .tab {

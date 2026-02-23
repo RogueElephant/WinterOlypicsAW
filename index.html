@@ -24,10 +24,15 @@
 
     <main class="container">
         <nav class="tabs" id="viewTabs" aria-label="Views">
+            <button class="tab" data-view="welcome" type="button">Welcome</button>
             <button class="tab is-active" data-view="teams" type="button">Teams</button>
             <button class="tab" data-view="points" type="button">Points</button>
             <button class="tab" data-view="events" type="button">Events</button>
         </nav>
+
+        <section id="viewWelcome" class="view" aria-label="Welcome view">
+            <img class="welcome-image" src="welcome.png" alt="Winter Olympics welcome" />
+        </section>
 
         <section id="viewTeams" class="view is-active" aria-label="Teams view">
             <section class="card">
