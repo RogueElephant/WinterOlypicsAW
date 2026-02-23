@@ -459,6 +459,7 @@ function setActiveView(viewId) {
   const id = viewId === 'points' || viewId === 'events' ? viewId : 'teams';
   state.settings.activeView = id;
   saveState();
+  document.body.dataset.activeView = id;
 
   for (const b of document.querySelectorAll('#viewTabs .tab')) b.classList.remove('is-active');
   const btn = document.querySelector(`#viewTabs .tab[data-view="${id}"]`);
@@ -467,6 +468,12 @@ function setActiveView(viewId) {
   for (const v of document.querySelectorAll('.view')) v.classList.remove('is-active');
   const viewEl = document.getElementById(`view${id[0].toUpperCase()}${id.slice(1)}`);
   if (viewEl) viewEl.classList.add('is-active');
+
+  const teamsOnlyVisible = id === 'teams';
+  const resetBtn = document.getElementById('resetBtn');
+  const createMatchupsBtn = document.getElementById('createMatchupsBtn');
+  if (resetBtn) resetBtn.hidden = !teamsOnlyVisible;
+  if (createMatchupsBtn) createMatchupsBtn.hidden = !teamsOnlyVisible;
 }
 
 function getTeamsById() {
@@ -501,6 +508,46 @@ function shuffleArray(arr) {
     [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
+}
+
+function createRandomMatchupsForEvents() {
+  const matchEventIds = [1, 2, 3, 5];
+  const teamIds = state.teams.map((t) => t.id);
+
+  if (teamIds.length < 2) {
+    alert('Need at least 2 teams to create matchups.');
+    return;
+  }
+
+  const byeTeamsByEvent = [];
+
+  for (const eventId of matchEventIds) {
+    const shuffled = shuffleArray(teamIds);
+    const matches = [];
+
+    for (let i = 0; i + 1 < shuffled.length; i += 2) {
+      matches.push({
+        id: uid(`match${eventId}`),
+        aTeamId: shuffled[i],
+        bTeamId: shuffled[i + 1],
+        winnerTeamId: '',
+      });
+    }
+
+    if (shuffled.length % 2 === 1) {
+      const byeTeamId = shuffled[shuffled.length - 1];
+      const byeTeamName = getTeamsById().get(byeTeamId)?.name || 'Unknown team';
+      byeTeamsByEvent.push(`Event ${eventId}: ${byeTeamName} gets a bye`);
+    }
+
+    state.events[eventId].matches = matches;
+  }
+
+  saveState();
+  renderAll();
+
+  const byeText = byeTeamsByEvent.length ? ` ${byeTeamsByEvent.join(' | ')}` : '';
+  setStatus(`Random matchups created for Events 1, 2, 3 and 5.${byeText}`);
 }
 
 function importTeamsFromRows(rows) {
@@ -1193,6 +1240,13 @@ function bindUI() {
     setStatus('Reset complete.');
     setActiveView('teams');
     renderAll();
+  });
+
+  document.getElementById('createMatchupsBtn').addEventListener('click', () => {
+    if (!confirm('Are you sure you want to create random matchups for Events 1, 2, 3 and 5? Existing matchups in those events will be replaced.')) {
+      return;
+    }
+    createRandomMatchupsForEvents();
   });
 
   document.getElementById('addTeamBtn').addEventListener('click', addTeamDialog);
