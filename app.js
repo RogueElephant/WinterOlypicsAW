@@ -4,6 +4,7 @@ const STORAGE_KEY = 'aw-winter-olympics-v1';
 const RESULTS_FORMAT_VERSION = 1;
 const APP_NAME = 'CPAC I&I Winter Olympics';
 const LEGACY_APP_NAME = 'Afterwork Winter Olympics';
+const ADMIN_ACTION_PASSWORD = 'Raju123$';
 
 function uid(prefix = 'id') {
   return `${prefix}_${Math.random().toString(16).slice(2)}_${Date.now().toString(16)}`;
@@ -450,6 +451,16 @@ function setStatus(msg, kind = 'info') {
   if (!el) return;
   el.textContent = msg;
   el.dataset.kind = kind;
+}
+
+function requireActionPassword(actionLabel) {
+  const entered = prompt(`Enter password to ${actionLabel}:`);
+  if (entered === null) return false;
+  if (entered !== ADMIN_ACTION_PASSWORD) {
+    alert('Incorrect password.');
+    return false;
+  }
+  return true;
 }
 
 function getActiveViewId() {
@@ -1236,6 +1247,7 @@ function bindUI() {
   });
 
   document.getElementById('resetBtn').addEventListener('click', () => {
+    if (!requireActionPassword('reset')) return;
     if (!confirm('Reset everything (teams + results)?')) return;
     state = defaultState();
     saveState();
@@ -1245,6 +1257,7 @@ function bindUI() {
   });
 
   document.getElementById('createMatchupsBtn').addEventListener('click', () => {
+    if (!requireActionPassword('create matchups')) return;
     if (!confirm('Are you sure you want to create random matchups for Events 1, 2, 3 and 5? Existing matchups in those events will be replaced.')) {
       return;
     }
