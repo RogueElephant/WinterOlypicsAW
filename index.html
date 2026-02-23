@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Afterwork Winter Olympics</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script defer src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script defer src="app.js"></script>
+</head>
+
+<body>
+    <header class="header">
+        <div>
+            <h1>Afterwork Winter Olympics</h1>
+            <p class="muted">Upload your Excel sheet to load teams, then enter results for 5 events. Points update
+                automatically.</p>
+        </div>
+        <div class="header-actions">
+            <button id="resetBtn" class="btn btn-secondary" type="button" title="Clears all loaded data">Reset</button>
+        </div>
+    </header>
+
+    <main class="container">
+        <nav class="tabs" id="viewTabs" aria-label="Views">
+            <button class="tab is-active" data-view="teams" type="button">Teams</button>
+            <button class="tab" data-view="points" type="button">Points</button>
+            <button class="tab" data-view="events" type="button">Events</button>
+        </nav>
+
+        <section id="viewTeams" class="view is-active" aria-label="Teams view">
+            <section class="card">
+                <h2>Import teams</h2>
+                <p class="muted">Expected columns: <strong>Team</strong> / <strong>Team Name</strong> and 4 members
+                    (Member
+                    1..4). Extra columns are ignored.</p>
+
+                <div class="row">
+                    <input id="fileInput" type="file" accept=".xlsx,.xls,.csv" />
+                    <button id="loadSampleBtn" class="btn" type="button">Load sample teams</button>
+                </div>
+
+                <div class="row" style="margin-top: 10px;">
+                    <button id="exportXlsxBtn" class="btn btn-secondary" type="button"
+                        title="Download teams + results as an Excel file">Save (.xlsx)</button>
+                    <button id="exportCsvBtn" class="btn btn-secondary" type="button"
+                        title="Download teams + results as a CSV file">Save (.csv)</button>
+                    <input id="importResultsInput" type="file" accept=".xlsx,.xls,.csv" style="display:none" />
+                    <button id="importResultsBtn" class="btn btn-secondary" type="button"
+                        title="Load a previously saved results file">Load saved file</button>
+                </div>
+
+                <div id="importStatus" class="status" aria-live="polite"></div>
+            </section>
+
+            <section class="card">
+                <div class="card-title">
+                    <h2>Teams list</h2>
+                    <div class="card-actions">
+                        <button id="addTeamBtn" class="btn btn-secondary" type="button">Add team</button>
+                    </div>
+                </div>
+                <div class="table-wrap">
+                    <table class="table" id="teamsTable">
+                        <thead>
+                            <tr>
+                                <th>Team</th>
+                                <th>Members</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+        </section>
+
+        <section id="viewPoints" class="view" aria-label="Points view">
+            <section class="card">
+                <h2>Points table</h2>
+                <div class="table-wrap">
+                    <table class="table" id="pointsTable">
+                        <thead>
+                            <tr>
+                                <th>Team</th>
+                                <th class="num">Event 1</th>
+                                <th class="num">Event 2</th>
+                                <th class="num">Event 3</th>
+                                <th class="num">Event 4</th>
+                                <th class="num">Event 5</th>
+                                <th class="num">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+        </section>
+
+        <section id="viewEvents" class="view" aria-label="Events view">
+            <section class="card">
+                <div class="card-title">
+                    <h2>Enter event results</h2>
+                    <div class="card-actions">
+                        <label class="inline">
+                            <span class="muted">Scoring:</span>
+                            <select id="scoringMode" class="select">
+                                <option value="default">Default</option>
+                                <option value="linear">Linear by rank (Event 4)</option>
+                            </select>
+                        </label>
+                    </div>
+                </div>
+
+                <nav class="tabs" id="eventTabs" aria-label="Events">
+                    <button class="tab is-active" data-event="1" type="button">Event 1 – Bobsled</button>
+                    <button class="tab" data-event="2" type="button">Event 2 – Ice hockey</button>
+                    <button class="tab" data-event="3" type="button">Event 3 – Curling</button>
+                    <button class="tab" data-event="4" type="button">Event 4 – Biathlon</button>
+                    <button class="tab" data-event="5" type="button">Event 5 – Skijump</button>
+                </nav>
+
+                <div id="eventPanels"></div>
+            </section>
+        </section>
+
+        <footer class="footer muted">
+            <p>Runs fully locally in your browser. Data is saved to localStorage.</p>
+        </footer>
+    </main>
+</body>
+
+</html>
