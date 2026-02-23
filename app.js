@@ -644,7 +644,7 @@ function computePoints() {
   }
 
   // Event 4: timed
-  // Top 3 only: 1st=3, 2nd=2, 3rd=1
+  // Top 4 score: 1st=5, 2nd=3, 3rd=2, 4th=1
   for (const eventId of [4]) {
     const times = state.events[eventId].times || {};
     const entries = Object.entries(times)
@@ -653,11 +653,11 @@ function computePoints() {
 
     entries.sort((a, b) => a.seconds - b.seconds);
 
-    const top3Score = [3, 2, 1];
-    const limit = Math.min(3, entries.length);
+    const top4Score = [5, 3, 2, 1];
+    const limit = Math.min(4, entries.length);
     for (let i = 0; i < limit; i += 1) {
       const teamId = entries[i].teamId;
-      points[teamId][eventId] += top3Score[i];
+      points[teamId][eventId] += top4Score[i];
     }
   }
 
@@ -1058,7 +1058,7 @@ function renderTimedPanel(eventId) {
 
   const hint = document.createElement('p');
   hint.className = 'muted small';
-  hint.textContent = 'Enter time in seconds (lower is better). Points: 1st=3, 2nd=2, 3rd=1 (only top 3 score).';
+  hint.textContent = 'Enter time in seconds (lower is better). Points: 1st=5, 2nd=3, 3rd=2, 4th=1 (top 4 score).';
   panel.appendChild(hint);
 
   if (!state.teams.length) {
@@ -1197,16 +1197,27 @@ function bindUI() {
 
   document.getElementById('addTeamBtn').addEventListener('click', addTeamDialog);
 
-  document.getElementById('loadSampleBtn').addEventListener('click', () => {
-    state.teams = ensureUniqueTeamNames([
-      { id: uid('team'), name: 'Team Frost', members: ['Alex', 'Sam', 'Kim', 'Jo'] },
-      { id: uid('team'), name: 'Team Glacier', members: ['Pat', 'Taylor', 'Morgan', 'Casey'] },
-      { id: uid('team'), name: 'Team Aurora', members: ['Robin', 'Lee', 'Jordan', 'Jamie'] },
-      { id: uid('team'), name: 'Team Polar', members: ['Chris', 'Dana', 'Riley', 'Avery'] },
-    ]);
-    saveState();
-    setStatus('Loaded sample teams.');
-    renderAll();
+  document.getElementById('loadSampleBtn').addEventListener('click', async () => {
+    try {
+      const defaultTeamsFile = 'I&IAW_Feb_2026(Team list).csv';
+      setStatus('Loading default teams file…');
+      const response = await fetch(encodeURI(defaultTeamsFile));
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const text = await response.text();
+      const rows = parseCsv(text);
+
+      const { teams, warnings } = importTeamsFromRows(rows);
+      state.teams = teams;
+      state.events = defaultState().events;
+
+      saveState();
+      renderAll();
+      const warningText = warnings.length ? ` (${warnings.join(' ')})` : '';
+      setStatus(`Loaded default teams from "${defaultTeamsFile}".${warningText}`);
+    } catch (err) {
+      console.error(err);
+      setStatus('Could not load default teams file.', 'error');
+    }
   });
 
   document.getElementById('fileInput').addEventListener('change', async (e) => {

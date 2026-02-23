@@ -44,7 +44,7 @@ Note: Excel save/load requires the `xlsx` library to be available in the browser
 - Event 1 (Bobsled, 1v1): winner=3
 - Event 2 (Ice hockey, 1v1): winner=3
 - Event 3 (Curling, 1v1): winner=3
-- Event 4 (Biathlon, timed): only top 3 score (1st=3, 2nd=2, 3rd=1)
+- Event 4 (Biathlon, timed): top 4 score (1st=5, 2nd=3, 3rd=2, 4th=1)
 - Event 5 (Skijump, 1v1): winner=3
 
 Data persists in your browser via `localStorage`.
